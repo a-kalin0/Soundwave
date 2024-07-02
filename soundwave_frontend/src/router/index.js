@@ -1,20 +1,68 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
 
 const routes = [
   {
     path: '/',
     name: 'home',
-    component: HomeView
+    component: () => import('../views/HomeView.vue')
   },
   {
     path: '/about',
     name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-  }
+    component: () => import('../views/AboutView.vue')
+  },
+  {
+    path: '/privacy',
+    name: 'Privacy',
+    component: () => import('../views/PrivacyView.vue')
+  },
+  {
+    path: '/terms',
+    name: 'Terms',
+    component: () => import('../views/TermsView.vue')
+  },
+  {
+    path: '/cookies',
+    name: 'Cookies',
+    component: () => import('../views/CookiesView.vue')
+  },
+  {
+    path: '/accessibility',
+    name: 'Accessibility',
+    component: () => import('../views/AccessibilityView.vue')
+  },
+  {
+    path: '/sign-up',
+    name: 'SignUp',
+    component: () => import('../views/SignUp.vue')
+  },
+  {
+    path: '/log-in',
+    name: 'LogIn',
+    component: () => import('../views/LogIn.vue')
+  },
+  {
+    path: '/account',
+    name: 'Account',
+    component: () => import('../views/AccountView.vue')
+  },
+
+  {
+    path: '/sound-meter',
+    name: 'SoundMeter',
+    component: () => import('../views/SoundMeter.vue')
+  },
+  {
+    path: '/sound-news',
+    name: 'SoundNews',
+    component: () => import('../views/SoundNews.vue')
+  },
+  {
+    path: '/sound-map',
+    name: 'SoundMap',
+    component: () => import('../views/SoundMap.vue')
+  },
+
 ]
 
 const router = createRouter({
