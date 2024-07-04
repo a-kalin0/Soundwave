@@ -1,0 +1,17 @@
+@import '../../../node_modules/bulma/bulma.scss';
+
+$primary: #00d1b2;
+$background-light: #ffffff;
+$background-dark: #363636;
+$color-light: #363636;
+$color-dark: #ffffff;
+
+.light-theme {
+  background-color: $background-light;
+  color: $color-light;
+}
+
+.dark-theme {
+  background-color: $background-dark;
+  color: $color-dark;
+}

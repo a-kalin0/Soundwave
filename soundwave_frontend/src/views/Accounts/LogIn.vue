@@ -4,7 +4,7 @@
             <div class="column is-4 is-offset-4">
                 <h1 class="title">Log in</h1>
 
-                <form @submit.prevent="submitForm">
+                <form @submit.prevent="logIn">
                     <div class="field">
                         <label>Username</label>
                         <div class="control">
@@ -20,7 +20,7 @@
                     </div>
 
                     <div class="notification is-danger" v-if="errors.length">
-                        <p v-for="error in errors" :key="error">{{ error }}</p>
+                        <p v-for="error in errors" v-bind:key="error">{{ error }}</p>
                     </div>
 
                     <div class="field">
@@ -51,48 +51,47 @@ export default {
         }
     },
     mounted() {
-        document.title = 'Log In | Djackets'
+        document.title = 'Log In | Soundwave'
     },
     methods: {
-        async submitForm() {
-            this.errors = []
+        async logIn() {
+            axios.defaults.headers.common["Authorization"] = ""
+
+            localStorage.removeItem("token")
 
             const formData = {
                 username: this.username,
                 password: this.password
             }
 
-            try {
-                const response = await axios.post("/api/v1/token/login/", formData)
-                const token = response.data.auth_token
+            await axios
+                .post("/api/v1/token/login/", formData)
+                .then(response => {
+                    const token = response.data.auth_token
 
-                console.log('Token:', token)
-                this.$store.commit('setToken', token)
-                localStorage.setItem("token", token)
+                    this.$store.commit('setToken', token)
+                    
+                    axios.defaults.headers.common["Authorization"] = "Token " + token
 
-                // Configurer les en-têtes d'authentification
-                axios.defaults.headers.common["Authorization"] = "Token " + token
+                    localStorage.setItem("token", token)
 
-                // Récupérer les informations de l'utilisateur
-                const userResponse = await axios.get('/api/v1/users/me/')
-                const user = userResponse.data
-                console.log('User:', user)
-                this.$store.commit('setUser', user)
-                localStorage.setItem('user', JSON.stringify(user))
+                    const toPath = this.$route.query.to || '/account'
 
-                const toPath = this.$route.query.to || '/'
-                this.$router.push(toPath)
-            } catch (error) {
-                if (error.response) {
-                    for (const property in error.response.data) {
-                        this.errors.push(`${property}: ${error.response.data[property]}`)
+                    this.$router.push(toPath)
+                })
+                .catch(error => {
+                    if (error.response) {
+                        for (const property in error.response.data) {
+                            this.errors.push(`${property}: ${error.response.data[property]}`)
+                        }
+                    } else {
+                        this.errors.push('Something went wrong. Please try again')
+                        
+                        console.log(JSON.stringify(error))
                     }
-                } else {
-                    this.errors.push('Something went wrong. Please try again')
-                    console.log(JSON.stringify(error))
-                }
-            }
-        }
+                })
+        }, 
     }
 }
+
 </script>

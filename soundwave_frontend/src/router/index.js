@@ -1,66 +1,75 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import store from '../store'
 
 const routes = [
   {
     path: '/',
     name: 'home',
-    component: () => import('../views/HomeView.vue')
+    component: () => import('../views/Others/HomeView.vue')
   },
   {
     path: '/about',
     name: 'about',
-    component: () => import('../views/AboutView.vue')
+    component: () => import('../views/Others/AboutView.vue')
   },
   {
     path: '/privacy',
     name: 'Privacy',
-    component: () => import('../views/PrivacyView.vue')
+    component: () => import('../views/Others/PrivacyView.vue')
   },
   {
     path: '/terms',
     name: 'Terms',
-    component: () => import('../views/TermsView.vue')
+    component: () => import('../views/Others/TermsView.vue')
   },
   {
     path: '/cookies',
     name: 'Cookies',
-    component: () => import('../views/CookiesView.vue')
+    component: () => import('../views/Others/CookiesView.vue')
   },
   {
     path: '/accessibility',
     name: 'Accessibility',
-    component: () => import('../views/AccessibilityView.vue')
+    component: () => import('../views/Others/AccessibilityView.vue')
   },
   {
     path: '/sign-up',
     name: 'SignUp',
-    component: () => import('../views/SignUp.vue')
+    component: () => import('../views/Accounts/SignUp.vue')
   },
   {
     path: '/log-in',
     name: 'LogIn',
-    component: () => import('../views/LogIn.vue')
+    component: () => import('../views/Accounts/LogIn.vue')
   },
   {
     path: '/account',
     name: 'Account',
-    component: () => import('../views/AccountView.vue')
+    component: () => import('../views/Accounts/AccountView.vue'),
+    meta: {
+      requireLogin: true,
+    }
   },
 
   {
     path: '/sound-meter',
     name: 'SoundMeter',
-    component: () => import('../views/SoundMeter.vue')
+    component: () => import('../views/Soundmeter/SoundMeter.vue')
   },
   {
     path: '/sound-news',
     name: 'SoundNews',
-    component: () => import('../views/SoundNews.vue')
+    component: () => import('../views/Soundnews/SoundNews.vue')
   },
   {
     path: '/sound-map',
     name: 'SoundMap',
-    component: () => import('../views/SoundMap.vue')
+    component: () => import('../views/Soundmap/SoundMap.vue')
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'PageNotFound',
+    component: () => import('../components/Error404.vue')
   },
 
 ]
@@ -68,6 +77,14 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requireLogin) && !store.state.isAuthenticated) {
+    next({ name: 'LogIn', query: { to: to.path } });
+  } else {
+    next()
+  }
 })
 
 export default router

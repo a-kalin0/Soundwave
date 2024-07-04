@@ -8,6 +8,9 @@ venv/
 node_modules/
 /dist
 
+# Migrations files
+migrations/
+
 # Python cache and others
 __pycache__/
 .DS_Store
