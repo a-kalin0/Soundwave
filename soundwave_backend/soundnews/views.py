@@ -5,25 +5,25 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
-from .models import Story, Category
-from .serializers import StorySerializer, CategorySerializer
+from .models import Article, Category
+from .serializers import ArticleSerializer, CategorySerializer
 
-class LatestStoriesList(APIView):
+class LatestArticlesList(APIView):
     def get(self, request, format=None):
-        products = Story.objects.all()[0:4]
-        serializer = StorySerializer(products, many=True)
+        articles = Article.objects.all()[0:4]
+        serializer = ArticleSerializer(articles, many=True)
         return Response(serializer.data)
 
-class StoryDetail(APIView):
-    def get_object(self, category_slug, story_slug):
+class ArticleDetail(APIView):
+    def get_object(self, category_slug, article_slug):
         try:
-            return Story.objects.filter(category__slug=category_slug).get(slug=story_slug)
-        except Story.DoesNotExist:
+            return Article.objects.filter(category__slug=category_slug).get(slug=article_slug)
+        except Article.DoesNotExist:
             raise Http404
     
-    def get(self, request, category_slug, story_slug, format=None):
-        product = self.get_object(category_slug, story_slug)
-        serializer = StorySerializer(product)
+    def get(self, request, category_slug, article_slug, format=None):
+        product = self.get_object(category_slug, article_slug)
+        serializer = ArticleSerializer(product)
         return Response(serializer.data)
 
 class CategoryDetail(APIView):
@@ -43,8 +43,8 @@ def search(request):
     query = request.data.get('query', '')
 
     if query:
-        stories = Story.objects.filter(Q(name__icontains=query) | Q(description__icontains=query))
-        serializer = StorySerializer(stories, many=True)
+        articles = Article.objects.filter(Q(name__icontains=query) | Q(description__icontains=query))
+        serializer = ArticleSerializer(articles, many=True)
         return Response(serializer.data)
     else:
-        return Response({"products": []})
+        return Response({"stories": []})

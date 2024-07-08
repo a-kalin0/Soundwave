@@ -8,8 +8,9 @@ venv/
 node_modules/
 /dist
 
-# Migrations files
+# Migrations & media files
 migrations/
+media/
 
 # Python cache and others
 __pycache__/

@@ -2,25 +2,37 @@
     <div class="page-my-account">
         <div class="columns is-multiline">
             <div class="column is-12">
-                <h1 class="title">My Account</h1>
+                <h1 class="title" v-if="user">Welcome back {{ user.username }} !! </h1>
                 
             </div>
 
-            <div class="column is-12" v-if="user">
-                <h1 class="title">Hello {{ user.username }} !!</h1>
+            <div class="column is-6" v-if="user">
+                <h1 class="title">Profile settings</h1>
                 <p><strong>Username:</strong> {{ user.username }}</p>
                 <p><strong>Email:</strong> {{ user.email }}</p>
                 <p><strong>ID:</strong> {{ user.id }}</p>
             </div>
-            <div class="column is-12" v-else>
+            <div class="column is-6" v-else>
+                <p>Loading...</p>
+            </div>
+            <div class="column is-6" v-if="user">
+                <h1 class="title">Statistics</h1>
+                <p><strong>Time spent on Soundwave : </strong></p>
+                <p><strong>Sounds recorded : </strong></p>
+                <p><strong>Sounds shared in the map : </strong></p>
+            </div>
+            <div class="column is-6" v-else>
                 <p>Loading...</p>
             </div>
 
-            <div class="column is-12">
-                <button @click="logout" class="button is-danger">Log out</button>
-            </div>
-
             <hr>
+        </div>
+
+        <div class="grid">
+            <div @click="logout" class="cell button is-warning">Log out</div>
+            <div class="cell button is-danger">Deactivate Account</div>
+            <div class="cell button is-danger">Delete Account</div>
+            <div class="cell button is-info">Activate 2FA</div>
         </div>
     </div>
 </template>
@@ -87,8 +99,7 @@ export default {
 
 <style scoped>
 .page-my-account {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
+  margin: 20px 20px;
+  padding: 20px 20px;
 }
 </style>

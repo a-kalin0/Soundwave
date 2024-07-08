@@ -3,7 +3,7 @@
     <div class="navbar-brand">
       <router-link to="/" class="navbar-item">
         <img src="../assets/mini_logo.png" alt="logo">
-        <strong>Soundwave</strong>
+        <strong>{{ $t('soundwave') }}</strong>
       </router-link>
 
       <a class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbar-menu">
@@ -20,12 +20,11 @@
             Menu
           </a>
           <div class="navbar-dropdown">
-            <router-link to="/sound-meter" class="navbar-item"><strong>Soundmeter</strong></router-link>
-            <router-link to="/sound-map" class="navbar-item"><strong>Soundmap</strong></router-link>
-            <router-link to="/sound-news" class="navbar-item"><strong>Soundnews</strong></router-link>
-            <router-link to="/" class="navbar-item"><strong>Light/dark mode</strong></router-link>
+            <router-link to="/sound-meter" class="navbar-item"><strong>{{ $t('soundMeter') }}</strong></router-link>
+            <router-link to="/sound-map" class="navbar-item"><strong>{{ $t('soundMap') }}</strong></router-link>
+            <router-link to="/sound-news" class="navbar-item"><strong>{{ $t('soundNews') }}</strong></router-link>
             <hr class="navbar-divider" />
-            <router-link to="/" class="navbar-item">More</router-link>
+            <router-link to="/" class="navbar-item">{{ $t('more') }}</router-link>
           </div>
         </div>
 
@@ -41,11 +40,15 @@
           </div>
         </div>
 
-        <ThemeSwitcher />
-
         <div class="navbar-item">
           <div class="buttons">
-            <router-link to="/log-in" class="button is-light"><strong>Log in</strong></router-link>
+            <ThemeSwitcher />
+            <router-link v-if="isAuthenticated" to="/account" class="button is-light">
+              <strong>{{ $t('accountButton') }}</strong>
+            </router-link>
+            <router-link v-else to="/log-in" class="button is-light">
+              <strong>{{ $t('loginButton') }}</strong>
+            </router-link>
           </div>
         </div>
       </div>
@@ -55,11 +58,15 @@
 
 <script>
 import ThemeSwitcher from './ThemeSwitcher.vue';
+import { mapState } from 'vuex';
 
 export default {
   name: 'NavBar',
   components: {
     ThemeSwitcher
+  },
+  computed: {
+    ...mapState(['isAuthenticated'])
   },
   methods: {
     changeLocale(locale) {

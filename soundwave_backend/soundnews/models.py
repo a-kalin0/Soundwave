@@ -19,8 +19,8 @@ class Category(models.Model):
     
 
 
-class Story(models.Model):
-    category = models.ForeignKey(Category, related_name='stories', on_delete=models.CASCADE)
+class Article(models.Model):
+    category = models.ForeignKey(Category, related_name='articles', on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     slug = models.SlugField(null=True)
     author = models.CharField(max_length=100)
@@ -36,22 +36,22 @@ class Story(models.Model):
         return self.title
     
     def get_absolute_url(self):
-        return f'/{self.category.slug}/{self.slug}'
+        return f'{self.category.slug}/{self.slug}'
     
     def get_image(self):
         if self.image:
-            return 'http://127.0.0.1.8000' + self.image.url
+            return 'http://127.0.0.1:8000' + self.image.url
         return  ''
     
     def get_thumbnail(self):
         if self.thumbnail:
-            return 'http://127.0.0.1.8000' + self.thumbnail.url
+            return 'http://127.0.0.1:8000' + self.thumbnail.url
         else:
             if self.image:
                 self.thumbnail = self.make_thumbnail(self.image)
                 self.save()
                 
-                return 'http://127.0.0.1.8000' + self.thumbnail.url
+                return 'http://127.0.0.1:8000' + self.thumbnail.url
             else:
                 return ''
     

@@ -1,7 +1,7 @@
 from django.contrib import admin
-from .models import Story, Category
+from .models import Article, Category
 
-@admin.register(Story)
+@admin.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
     list_display = ['title', 'author', 'publication_date', 'category']
     search_fields = ['title', 'author', 'content']

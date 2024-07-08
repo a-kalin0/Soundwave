@@ -1,10 +1,10 @@
 from rest_framework import serializers
 
-from .models import Category, Story
+from .models import Category, Article
 
-class StorySerializer(serializers.ModelSerializer):
+class ArticleSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Story
+        model = Article
         fields = (
             "id",
             "title",
@@ -15,7 +15,7 @@ class StorySerializer(serializers.ModelSerializer):
         )
 
 class CategorySerializer(serializers.ModelSerializer):
-    stories = StorySerializer(many=True)
+    articles = ArticleSerializer(many=True)
 
     class Meta:
         model = Category
@@ -23,5 +23,5 @@ class CategorySerializer(serializers.ModelSerializer):
             "id",
             "name",
             "get_absolute_url",
-            "stories",
+            "articles",
         )

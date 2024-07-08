@@ -4,11 +4,10 @@
     <section class="hero is-medium is-dark mb-6">
         <div class="hero-body has-text-centered">
             <p class="title mb-6">
-              {{ $t('welcomeMsg') }}
+              {{ $t('welcomeTitle') }}
             </p>
             <p class="subtitle">
-                The Progressive Web App made to measure noise pollution and raise awareness of its negatives effects
-
+              {{ $t('welcomeSubtitle') }}
             </p>
         </div>
     </section>

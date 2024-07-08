@@ -62,6 +62,16 @@ const routes = [
     component: () => import('../views/Soundnews/SoundNews.vue')
   },
   {
+    path: '/:category_slug/:article_slug/',
+    name: 'Article',
+    component: () => import('../views/Soundnews/Article.vue')
+  },
+  {
+    path: '/:category_slug',
+    name: 'Category',
+    component: () => import('../views/Soundnews/Category.vue')
+  },
+  {
     path: '/sound-map',
     name: 'SoundMap',
     component: () => import('../views/Soundmap/SoundMap.vue')

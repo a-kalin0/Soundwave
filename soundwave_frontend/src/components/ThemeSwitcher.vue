@@ -1,7 +1,7 @@
 <!-- src/components/ThemeSwitcher.vue -->
 <template>
     <button @click="toggleTheme" class="button is-primary">
-      Switch to {{ isDarkTheme ? 'Light' : 'Dark' }} Theme
+      {{ isDarkTheme ? $t('themeLight') : $t('themeDark') }} 
     </button>
   </template>
   
@@ -31,8 +31,6 @@
   </script>
   
   <style scoped>
-  .button {
-    margin-top: 1rem;
-  }
+  
   </style>
   
