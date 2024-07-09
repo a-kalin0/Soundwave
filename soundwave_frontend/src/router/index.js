@@ -57,6 +57,12 @@ const routes = [
     component: () => import('../views/Soundmeter/SoundMeter.vue')
   },
   {
+    path: '/my-sounds',
+    name: 'MySounds',
+    component: () => import('../views/Soundmeter/MySounds.vue')
+  },
+
+  {
     path: '/sound-news',
     name: 'SoundNews',
     component: () => import('../views/Soundnews/SoundNews.vue')

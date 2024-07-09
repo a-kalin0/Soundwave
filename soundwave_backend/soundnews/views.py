@@ -2,7 +2,7 @@ from django.db.models import Q
 from django.http import Http404
 
 from rest_framework.views import APIView
-from rest_framework.response import Response
+from rest_framework.response import Response 
 from rest_framework.decorators import api_view
 
 from .models import Article, Category
@@ -22,8 +22,8 @@ class ArticleDetail(APIView):
             raise Http404
     
     def get(self, request, category_slug, article_slug, format=None):
-        product = self.get_object(category_slug, article_slug)
-        serializer = ArticleSerializer(product)
+        article = self.get_object(category_slug, article_slug)
+        serializer = ArticleSerializer(article)
         return Response(serializer.data)
 
 class CategoryDetail(APIView):
