@@ -13,14 +13,13 @@
             </div>
         </section>
 
-        <div class="columns is-multiline">
-            <div class="column is-12">
-                <h2 class="is-size-2 has-text-centered">
-                    Latest News
-                </h2>
+        <div>
+            <h1 class="title has-text-centered">Latest News</h1>
+            <div class="columns is-multiline">
+                <div class="column is-one-third" v-for="article in latestArticles" :key="article.id">
+                    <ArticleBox :article="article" />
+                </div>
             </div>
-
-            <ArticleBox v-for="article in latestArticles" v-bind:key="article.id" v-bind:article="article" />
         </div>
     </div>
 </template>

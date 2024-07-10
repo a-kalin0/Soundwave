@@ -50,7 +50,11 @@ const routes = [
       requireLogin: true,
     }
   },
-
+  {
+    path: '/activate/:uid/:token',
+    name: 'ActivateAccount',
+    component: () => import('../views/Accounts/ActivateAccount.vue')
+  },
   {
     path: '/sound-meter',
     name: 'SoundMeter',

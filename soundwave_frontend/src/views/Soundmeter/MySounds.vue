@@ -1,23 +1,26 @@
 <template>
-    <div>
-        <h1>My Sounds</h1>
-        <div v-if="sounds.length">
-            <ul>
-                <li v-for="sound in sounds" :key="sound.id">
-                    <h2>{{ sound.title }}</h2>
-                    <p>{{ sound.description }}</p>
-                    <p>Duration : {{ sound.duration }}</p>
-                    <p>Min dB : {{ sound.min_db_size }}</p>
-                    <p>Max dB : {{ 
-                    sound.max_db_size }}</p>
-                    <p>Avg dB : {{ sound.avg_db_size }}</p>
-                </li>
-            </ul>
-        </div>
-        <div v-else>
-            <p>No sounds recorded yet.</p>
-        </div>
-    </div>
+  <div>
+      <h1 class="title">My Sounds</h1>
+      <div v-if="sounds.length">
+          <div class="columns is-multiline">
+              <div class="column is-one-third" v-for="sound in sounds" :key="sound.id">
+                  <div class="card">
+                      <div class="card-content">
+                          <p class="title is-4">{{ sound.title }}</p>
+                          <p>{{ sound.description }}</p>
+                          <p>Duration: {{ sound.duration }} seconds</p>
+                          <p>Min dB: {{ sound.min_db_size }}</p>
+                          <p>Max dB: {{ sound.max_db_size }}</p>
+                          <p>Avg dB: {{ sound.avg_db_size }}</p>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+      <div v-else>
+          <p>No sounds recorded yet.</p>
+      </div>
+  </div>
 </template>
 
 <script>
@@ -47,18 +50,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-h1 {
-  margin-bottom: 1rem;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  border: 1px solid #ccc;
-  padding: 1rem;
-  margin-bottom: 1rem;
-}
-</style>

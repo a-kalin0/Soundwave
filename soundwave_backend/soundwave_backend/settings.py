@@ -46,10 +46,12 @@ INSTALLED_APPS = [
     'djoser',
 
     'soundmeter',
-    'soundnews'
+    'soundnews',
+    'accounts',
 ]
 
 CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS').split(',')
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -157,3 +159,22 @@ REST_FRAMEWORK = {
 }
 
 MAPBOX_API_KEY = config('MAPBOX_API_KEY')
+
+
+DJOSER = {
+    'SEND_ACTIVATION_EMAIL': True,
+    'ACTIVATION_URL': 'activate/{uid}/{token}/',
+    'PASSWORD_RESET_CONFIRM_URL': 'api/v1/users/reset_password_confirm/{uid}/{token}/',
+    'SERIALIZERS': {},
+    'EMAIL': {
+        'activation': 'accounts.email.CustomActivationEmail',
+    },
+}
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')

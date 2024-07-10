@@ -31,9 +31,22 @@
         <div class="grid">
             <div @click="logout" class="cell button is-warning">Log out</div>
             <div class="cell button is-danger">Deactivate Account</div>
-            <div class="cell button is-danger">Delete Account</div>
+            <div @click="showDeleteModal" class="cell button is-danger">Delete Account</div>
             <div class="cell button is-info">Activate 2FA</div>
         </div>
+
+        <!-- Delete Account Modal -->
+         <div class="modal" :class="{ 'is-active': isDeleteModalActive }">
+            <div class="modal-background"></div>
+            <div class="modal-content">
+                <div class="box">
+                    <p>Are you sure you want to delete your account ? This action cannot be undone.</p>
+                    <button @click="deleteAccount" class="button is-danger">Delete my account</button>
+                    <button @click="hideDeleteModal" class="button">Cancel</button>
+                </div>
+            </div>
+            <button @click="hideDeleteModal" class="modal-close is-large" aria-label="close"></button>
+         </div>
     </div>
 </template>
 
@@ -45,7 +58,8 @@ export default {
     name: 'MyAccount',
     data() {
         return {
-            errors: []
+            errors: [],
+            isDeleteModalActive: false
         }
     },
     computed: {
@@ -57,6 +71,38 @@ export default {
     },
     methods: {
         ...mapMutations(['removeToken', 'setUser']),
+        showDeleteModal() {
+            this.isDeleteModalActive = true
+        },
+        hideDeleteModal() {
+            this.isDeleteModalActive = false
+        },
+        async deleteAccount() {
+            try {
+                const token = localStorage.getItem("token")
+                axios.defaults.headers.common["Authorization"] = `Token ${token}`
+
+                await axios.delete("/api/v1/delete-account")
+
+                localStorage.removeItem("token")
+                localStorage.removeItem("user")
+
+                axios.defaults.headers.common["Authorization"] = ""
+
+                this.removeToken()
+
+                this.$router.push('/')
+            } catch (error) {
+                if (error.response) {
+                    for (const property in error.response.data) {
+                        this.errors.push(`${property}: ${error.response.data[property]}`)
+                    }
+                } else {
+                    this.errors.push('Something went wrong. Please try again')
+                    console.error(error)
+                }
+            }
+        },
         async logout() {
             try {
                 const token = localStorage.getItem("token")
