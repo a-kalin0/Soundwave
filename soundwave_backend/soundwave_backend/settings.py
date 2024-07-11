@@ -71,7 +71,7 @@ ROOT_URLCONF = 'soundwave_backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'soundwave_backend/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -162,12 +162,13 @@ MAPBOX_API_KEY = config('MAPBOX_API_KEY')
 
 
 DJOSER = {
+    'SEND_CONFIRMATION_EMAIL': True,
     'SEND_ACTIVATION_EMAIL': True,
     'ACTIVATION_URL': 'activate/{uid}/{token}/',
-    'PASSWORD_RESET_CONFIRM_URL': 'api/v1/users/reset_password_confirm/{uid}/{token}/',
-    'SERIALIZERS': {},
+    'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}/',
     'EMAIL': {
         'activation': 'accounts.email.CustomActivationEmail',
+        'password_reset': 'accounts.email.CustomPasswordResetEmail',
     },
 }
 

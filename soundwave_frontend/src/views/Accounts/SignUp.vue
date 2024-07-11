@@ -68,7 +68,7 @@ export default {
         }
     },
     methods: {
-        submitForm(){
+        async submitForm(){
             this.errors = []
 
             if (this.username === '') {
@@ -94,34 +94,30 @@ export default {
                     password: this.password
                 }
 
-                axios
-                    .post("/api/v1/users/", formData)
-                    // eslint-disable-next-line
-                    .then(response => {
-                        toast({
-                            message: 'Account created, please log in!',
-                            type: 'is-success',
-                            dismissible: true,
-                            pauseOnHover: true,
-                            duration: 2000,
-                            position: 'bottom-right',
-                        })
-
-                        this.$router.push('/')
+                try {
+                    axios.post("/api/v1/users/", formData)
+                    toast({
+                        message: 'Account created successfully. Please check your email to activate your account.',
+                        type: 'is-success',
+                        dismissible: true,
+                        pauseOnHover: true,
+                        duration: 2000,
+                        position: 'bottom-right',
                     })
-                    .catch(error => {
-                        if (error.response) {
-                            for (const property in error.response.data) {
-                                this.errors.push(`${property}: ${error.response.data[property]}`)
-                            }
-
-                            console.log(JSON.stringify(error.response.data))
-                        } else if (error.message) {
-                            this.errors.push('Something went wrong. Please try again')
-
-                            console.log(JSON.stringify(error))
+                    this.$router.push({ name: 'Congratulations', query: { email: this.email }})
+                } catch(error) {
+                    if (error.response) {
+                        for (const property in error.response.data) {
+                            this.errors.push(`${property}: ${error.response.data[property]}`)
                         }
-                    })
+
+                        console.log(JSON.stringify(error.response.data))
+                    } else if (error.message) {
+                        this.errors.push('Something went wrong. Please try again')
+
+                        console.log(JSON.stringify(error))
+                    }
+                }
             }
         }
     }

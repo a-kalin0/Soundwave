@@ -29,11 +29,25 @@
         </div>
 
         <div class="grid">
+            <router-link to="/change-password" class="cell button is-info">Change Password</router-link>
             <div @click="logout" class="cell button is-warning">Log out</div>
-            <div class="cell button is-danger">Deactivate Account</div>
+            <div @click="showDeactivateModal" class="cell button is-danger">Deactivate Account</div>
             <div @click="showDeleteModal" class="cell button is-danger">Delete Account</div>
             <div class="cell button is-info">Activate 2FA</div>
         </div>
+
+        <!-- Deactivate Account Modal -->
+         <div class="modal" :class="{'is-active': isDeactivateModalActive}">
+            <div class="modal-background"></div>
+            <div class="modal-content">
+                <div class="box">
+                    <p>You're about to deactivate your account. If you want to reactivate it, check your emails.</p>
+                    <button @click="deactivateAccount" class="button is-danger">Deactivate</button>
+                    <button @click="hideDeactivateModal" class="button">Cancel</button>
+                </div>
+            </div>
+            <button @click="hideDeactivateModal" class="modal-close is-large" aria-label="close"></button>
+         </div>
 
         <!-- Delete Account Modal -->
          <div class="modal" :class="{ 'is-active': isDeleteModalActive }">
@@ -59,7 +73,8 @@ export default {
     data() {
         return {
             errors: [],
-            isDeleteModalActive: false
+            isDeleteModalActive: false,
+            isDeactivateModalActive: false,
         }
     },
     computed: {
@@ -74,8 +89,40 @@ export default {
         showDeleteModal() {
             this.isDeleteModalActive = true
         },
+        showDeactivateModal() {
+            this.isDeactivateModalActive = true
+        },
         hideDeleteModal() {
             this.isDeleteModalActive = false
+        },
+        hideDeactivateModal() {
+            this.isDeactivateModalActive = false
+        },
+        async deactivateAccount() {
+            try {
+                const token = localStorage.getItem("token")
+                axios.defaults.headers.common["Authorization"] = `Token ${token}`
+                
+                await axios.post("/api/v1/deactivate-account/")
+
+                localStorage.removeItem("token")
+                localStorage.removeItem("user")
+
+                axios.defaults.headers.common["Authorization"] = ""
+
+                this.removeToken()
+
+                this.$router.push('/')
+            } catch (error) {
+                if (error.response) {
+                    for (const property in error.response.data) {
+                        this.errors.push(`${property}: ${error.response.data[property]}`)
+                    }
+                } else {
+                    this.errors.push('Something went wrong. Please try again')
+                    console.error(error)
+                }
+            }
         },
         async deleteAccount() {
             try {

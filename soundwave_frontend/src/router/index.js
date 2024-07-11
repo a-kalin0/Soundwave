@@ -38,6 +38,11 @@ const routes = [
     component: () => import('../views/Accounts/SignUp.vue')
   },
   {
+    path: '/congratulations',
+    name: 'Congratulations',
+    component: () => import('../views/Accounts/Congratulations.vue')
+  },
+  {
     path: '/log-in',
     name: 'LogIn',
     component: () => import('../views/Accounts/LogIn.vue')
@@ -49,6 +54,21 @@ const routes = [
     meta: {
       requireLogin: true,
     }
+  },
+  {
+    path: '/change-password',
+    name: 'ChangePassword',
+    component: () => import('../views/Accounts/ChangePassword.vue')
+  },
+  {
+    path: '/reset-password',
+    name: 'ResetPassword',
+    component: () => import('../views/Accounts/ResetPassword.vue')
+  },
+  {
+    path: '/password/reset/confirm/:uid/:token',
+    name: 'ResetpasswordConfirm',
+    component: () => import('../views/Accounts/ResetPasswordConfirm.vue')
   },
   {
     path: '/activate/:uid/:token',

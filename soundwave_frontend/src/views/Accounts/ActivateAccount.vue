@@ -5,7 +5,7 @@
                 Activating your account, please wait...
             </div>
             <div v-if="status === 'success'" class="notification is-success">
-                Your account has been activated successfully! You can now <router-link to="/login">login</router-link>.
+                Your account has been activated successfully! You can now <router-link to="/log-in">login</router-link>.
             </div>
             <div v-if="status === 'error'" class="notification is-danger">
                 There was an error activating your account. Please try again later.

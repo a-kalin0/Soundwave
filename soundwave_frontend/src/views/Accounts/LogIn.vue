@@ -31,6 +31,8 @@
 
                     <hr>
 
+                    <p> Password forgotten ? <router-link to="/reset-password">Click here to reset it</router-link></p>
+
                     Or <router-link to="/sign-up">click here</router-link> to sign up!
                 </form>
             </div>
