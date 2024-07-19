@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 # Create your models here.
 class Sound(models.Model):
     title = models.CharField(max_length=255, blank=True)
-    slug = models.SlugField(null=True)
     description = models.TextField(blank=True)
     duration = models.IntegerField(null=True)
     min_db_size = models.IntegerField(null=True)
@@ -12,6 +11,10 @@ class Sound(models.Model):
     avg_db_size = models.IntegerField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     owner = models.ForeignKey(User, verbose_name='propriétaire', on_delete=models.CASCADE)
+    is_shared = models.BooleanField(default=False)
+    location = models.CharField(max_length=255, blank=True, null=True)
+    latitude = models.FloatField(null=True, blank=True)
+    longitude = models.FloatField(null=True, blank=True)
 
     class Meta:
         ordering = ['-created_at']

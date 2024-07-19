@@ -1,25 +1,16 @@
 <template>
-
-<div class="home">
-
-<section class="hero is-medium is-dark mb-6">
-    <div class="hero-body has-text-centered">
-        <p class="title mb-6">
-            Welcome to the Sound Map page !
-        </p>
-        <p class="subtitle">
-            Here you can see the sounds shared by users ! Enjoy ! 
-
-        </p>
+    <div class="home">
+    <section class="hero is-medium is-dark mb-6">
+        <div class="hero-body has-text-centered">
+            <p class="title mb-6">Welcome to the Sound Map page !</p>
+            <p class="subtitle">Here you can see the sounds shared by users ! Enjoy !</p>
+        </div>
+    </section>
     </div>
-</section>
 
-</div>
-
-<div>
-    <MapSound />
-</div>
-
+    <div>
+        <MapSound />
+    </div>
 
 </template>
 

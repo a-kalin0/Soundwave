@@ -158,6 +158,7 @@ REST_FRAMEWORK = {
     ),
 }
 
+MAPTILER_API_KEY = config('MAPTILER_API_KEY')
 MAPBOX_API_KEY = config('MAPBOX_API_KEY')
 
 

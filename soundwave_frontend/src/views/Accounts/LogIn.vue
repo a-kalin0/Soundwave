@@ -42,6 +42,7 @@
 
 <script>
 import axios from 'axios'
+import { toast } from 'bulma-toast'
 
 export default {
     name: 'LogIn',
@@ -78,6 +79,15 @@ export default {
                     localStorage.setItem("token", token)
 
                     const toPath = this.$route.query.to || '/account'
+
+                    toast({
+                        message: 'Login successful.',
+                        type: 'is-success',
+                        dismissible: true,
+                        pauseOnHover: true,
+                        duration: 2000,
+                        position: 'bottom-right',
+                    })
 
                     this.$router.push(toPath)
                 })

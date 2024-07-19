@@ -1,5 +1,6 @@
 <template>
   <div class="home">
+
     <section class="hero is-medium is-dark mb-6">
         <div class="hero-body has-text-centered">
             <p class="title mb-6">
@@ -19,11 +20,10 @@
         <div class="controls">
           <button @click="startRecording" v-if="!recording && !stopped">Start Recording</button>
           <button @click="stopRecording" v-if="recording">Stop Recording</button>
-          <button @click="saveRecord" v-if="stopped">Save Record</button>
+          <button @click="showModal" v-if="stopped">Save Record</button>
           <button @click="resetRecord" v-if="stopped">Make Another Record</button>
         </div>
       </div>
-
       <div class="column">
         <div class="timer">
           <p>Recording time : {{ formattedTime }}</p>
@@ -44,10 +44,65 @@
         </div>
       </div>
     </div>
+
+    <!-- Save Record Modal -->
+    <div class="modal" :class="{ 'is-active': isModalActive }">
+      <div class="modal-background"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title">Save Record</p>
+          <button class="delete" @click="hideModal" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+          <form @submit.prevent="saveRecord">
+            <div class="field">
+              <label class="label">Title</label>
+              <div class="control">
+                <input type="text" class="input" v-model="title" required>
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Description</label>
+              <div class="control">
+                <textarea class="textarea" v-model="description" required></textarea>
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Average dB</label>
+              <div class="control">
+                <input type="text" class="input" :value="Math.round(average)" readonly>
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Min dB</label>
+              <div class="control">
+                <input type="text" class="input" :value="Math.round(min)" readonly>
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Max dB</label>
+              <div class="control">
+                <input type="text" class="input" :value="Math.round(max)" readonly>
+              </div>
+            </div>
+            <div class="field is-grouped">
+              <div class="control">
+                <button class="button is-link" type="submit">Save</button>
+              </div>
+              <div class="control">
+                <button class="button is-light" @click="hideModal" type="button">Cancel</button>
+              </div>
+            </div>
+          </form>
+        </section>
+      </div>
+    </div>
   </div>
 </template>
   
 <script>
+import axios from 'axios';
+import { toast } from 'bulma-toast';
   
 export default {
     name: 'SoundMeter',
@@ -67,6 +122,11 @@ export default {
         workletNode: null,
         sampleCount: 0,
         totalDb: 0,
+
+        isModalActive: false,
+        title: '',
+        description: '',
+        userId: null,
       };
     },
     computed: {
@@ -85,34 +145,34 @@ export default {
         this.audioContext = new (window.AudioContext)();
 
         const processorCode = `
-        class AudioProcessor extends AudioWorkletProcessor {
-          constructor() {
-            super();
-            this._lastUpdateTime = 0;
-          }
-
-          process(inputs, outputs, parameters) {
-            const input = inputs[0];
-            if (input.length > 0) {
-              const channelData = input[0];
-              let sum = 0;
-              for (let i = 0; i < channelData.length; i++) {
-                sum += channelData[i] * channelData[i];
-              }
-              const rms = Math.sqrt(sum / channelData.length);
-              let db = 20 * Math.log10(rms) + 100;
-
-              const currentTime = currentFrame / sampleRate;
-              if (currentTime - this._lastUpdateTime >= 0.2) {
-                this.port.postMessage(db);
-                this._lastUpdateTime = currentTime;
-              }
+          class AudioProcessor extends AudioWorkletProcessor {
+            constructor() {
+              super();
+              this._lastUpdateTime = 0;
             }
-            return true;
-          }
-        }
 
-        registerProcessor('audio-processor', AudioProcessor);
+            process(inputs, outputs, parameters) {
+              const input = inputs[0];
+              if (input.length > 0) {
+                const channelData = input[0];
+                let sum = 0;
+                for (let i = 0; i < channelData.length; i++) {
+                  sum += channelData[i] * channelData[i];
+                }
+                const rms = Math.sqrt(sum / channelData.length);
+                let db = 20 * Math.log10(rms) + 100;
+
+                const currentTime = currentFrame / sampleRate;
+                if (currentTime - this._lastUpdateTime >= 0.2) {
+                  this.port.postMessage(db);
+                  this._lastUpdateTime = currentTime;
+                }
+              }
+              return true;
+            }
+          }
+
+          registerProcessor('audio-processor', AudioProcessor);
       `;
 
       const blob = new Blob([processorCode], { type: 'application/javascript' });
@@ -155,32 +215,56 @@ export default {
           this.audioContext.close();
         }
       },
-      saveRecord() {
-        
+      showModal() {
+        this.isModalActive = true;
+      },
+      hideModal() {
+        this.isModalActive = false;
+      },
+      async saveRecord() {
+        const userId = await this.getUserId();
         const recordData = {
-          'title': 'Sound Record',
-          'slug': 'sound-record',
-          'description': 'Description of the sound record',
+          'title': this.title,
+          'description': this.description,
           'duration': this.time,
           'min_db_size': Math.round(this.min),
           'max_db_size': Math.round(this.max),
           'avg_db_size': Math.round(this.average),
-          'owner': 8
+          'owner': userId
         };
 
         fetch('http://127.0.0.1:8000/api/v1/sounds/', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify(recordData)
           
         })
          .then(response => response.json())
+         .then(          
+          toast({
+            message: 'Sound created successfully',
+            type: 'is-success',
+            dismissible: true,
+            pauseOnHover: true,
+            duration: 2000,
+            position: 'bottom-right',
+          }))
          .then(this.$router.push('/my-sounds'))
          .catch((error) => {
           console.error('Error:', error);
          });
+      },
+      async getUserId(){
+        try {
+          const response = await axios.get('/api/v1/users/me/')
+          const user = response.data
+
+          return user.id;
+        } catch (error) {
+          console.error('Error:', error);
+        }
       },
       resetRecord() {
         this.stopped = false;
@@ -259,5 +343,9 @@ export default {
 }
 .stat {
   margin: 0.5rem 0;
+}
+.modal-card {
+  width: 90%;
+  max-width: 640px;
 }
 </style>

@@ -15,11 +15,11 @@
             <div class="column is-6" v-else>
                 <p>Loading...</p>
             </div>
-            <div class="column is-6" v-if="user">
+            <div class="column is-6" v-if="stats">
                 <h1 class="title">Statistics</h1>
-                <p><strong>Time spent on Soundwave : </strong></p>
-                <p><strong>Sounds recorded : </strong></p>
-                <p><strong>Sounds shared in the map : </strong></p>
+                <p><strong>Time spent on Soundwave : {{ formatTime(stats.time_spent) }}</strong></p>
+                <p><strong>Sounds recorded : {{ stats.sounds_recorded }}</strong></p>
+                <p><strong>Sounds shared in the map : {{ stats.sounds_shared }}</strong></p>
             </div>
             <div class="column is-6" v-else>
                 <p>Loading...</p>
@@ -73,6 +73,7 @@ export default {
     data() {
         return {
             errors: [],
+            stats: {},
             isDeleteModalActive: false,
             isDeactivateModalActive: false,
         }
@@ -83,6 +84,7 @@ export default {
     mounted() {
         document.title = 'My account'
         this.fetchUser()
+        this.getStats()
     },
     methods: {
         ...mapMutations(['removeToken', 'setUser']),
@@ -97,6 +99,14 @@ export default {
         },
         hideDeactivateModal() {
             this.isDeactivateModalActive = false
+        },
+        async getStats() {
+            try {
+                const response = await axios.get('/api/v1/get_stats/')
+                this.stats = response.data
+            } catch (error) {
+                console.error('Error getting stats:', error)
+            }
         },
         async deactivateAccount() {
             try {
@@ -185,6 +195,13 @@ export default {
             } catch (error) {
                 console.error('Error fetching user:', error)
             }
+        },
+        formatTime(seconds) {
+            const days = Math.floor(seconds / 86400)
+            const hours = Math.floor((seconds % 86400) / 3600)
+            const minutes = Math.floor((seconds % 3600) / 60)
+            const sec = Math.floor(seconds % 60)
+            return `${days}d ${hours}h ${minutes} ${sec}s`
         }
     }
 }
