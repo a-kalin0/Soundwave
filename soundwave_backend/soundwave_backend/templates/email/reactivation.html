@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reactivate your account</title>
+    <style>
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #000000; 
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <p>Hello {{ user.username }},</p>
+    <p>You need to finish reactivating your Soundwave account.</p>
+    <p>Please click the button below to reactivate your account:</p>
+    <p>
+        <a href="{{ reactivate_link }}" class="button">Reactivate your account</a>
+    </p>
+    <p>Thanks for using Soundwave!</p>
+    <p>The Soundwave team</p>
+</body>
+</html>
