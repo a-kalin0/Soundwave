@@ -1,9 +1,9 @@
-name: Deploy to DigitalOcean 
+name: Deploy to DigitalOcean Droplet
 
 on:
   push:
     branches:
-    - production
+      - production  # Déclenche le workflow sur chaque push vers la branche 'production'
 
 jobs:
   deploy:
@@ -13,21 +13,18 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v2
 
-    - name: Copy files to Droplet
-      uses: appleboy/scp-action@v0.1.4
+    - name: Set up SSH
+      uses: webfactory/ssh-agent@v0.5.3
       with:
-        host: ${{ secrets.DROPLET_IP }}
-        username: root
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        source: "."
-        target: "/var/www/soundwave"
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: Copy files to Droplet
+      run: |
+        ssh -o StrictHostKeyChecking=no root@${{ secrets.DROPLET_IP }} "rm -rf /var/www/soundwave && mkdir -p /var/www/soundwave"
+        scp -r ./* root@${{ secrets.DROPLET_IP }}:/var/www/soundwave
 
     - name: Execute remote commands
-      uses: appleboy/ssh-action@v0.1.4
-      with:
-        host: ${{ secrets.DROPLET_IP }}
-        username: root
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: |
+      run: |
+        ssh -o StrictHostKeyChecking=no root@${{ secrets.DROPLET_IP }} << 'EOF'
           cd /var/www/soundwave
-          # autre commandes à venir
+
