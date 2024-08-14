@@ -42,6 +42,7 @@
 
 <script>
 import axios from 'axios'
+import Cookies from 'js-cookie'
 import { toast } from 'bulma-toast'
 
 export default {
@@ -60,7 +61,7 @@ export default {
         async logIn() {
             axios.defaults.headers.common["Authorization"] = ""
 
-            localStorage.removeItem("token")
+            Cookies.remove('token', { path: '/' })
 
             const formData = {
                 username: this.username,
@@ -76,7 +77,12 @@ export default {
                     
                     axios.defaults.headers.common["Authorization"] = "Token " + token
 
-                    localStorage.setItem("token", token)
+                    Cookies.set('token', token, {
+                        expires: 1,
+                        path: '/',
+                        secure: false,
+                        sameSite: 'Strict'
+                    })
 
                     const toPath = this.$route.query.to || '/account'
 

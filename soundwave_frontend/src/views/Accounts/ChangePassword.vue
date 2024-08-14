@@ -36,6 +36,7 @@
 
 <script>
 import axios from 'axios'
+import Cookies from 'js-cookie'
 import { toast } from 'bulma-toast'
 
 export default {
@@ -62,9 +63,10 @@ export default {
             }
 
             try {
+                const token = Cookies.get('Token')
                 await axios.post('/api/v1/users/set_password/', formData, {
                     headers: {
-                        'Authorization': `Token ${localStorage.getItem('token')}`
+                        'Authorization': `Token ${token}`
                     }
                 })
                 toast({

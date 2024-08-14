@@ -1,6 +1,8 @@
 <template>
   <div>
     <h1 class="title">My Sounds</h1>
+    <button @click="showImportModal()" class="button is-primary">Import Measure From Your Electronic SoundMeter</button>
+
     <div v-if="sounds.length">
         <div class="columns is-multiline">
             <div class="column is-one-third" v-for="sound in sounds" :key="sound.id">
@@ -123,12 +125,43 @@
         </footer>
       </div>
     </div>
+
+    <!-- Import Modal -->
+    <div class="modal" :class="{'is-active': isImportModalActive }">
+      <div class="modal-background"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title">Import Measures</p>
+          <button class="delete" @click="closeModal"></button>
+        </header>
+        <section class="modal-card-body">
+          <form @submit.prevent="importMeasure">
+            <div class="field">
+              <label class="label">Upload JSON File</label>
+              <div class="control">
+                <input type="file" @change="onFileChange" class="input" accept=".json" required>
+              </div>
+            </div>
+            <div class="field is-grouped">
+              <div class="control">
+                <button type="submit" class="button is-link">Import</button>
+              </div>
+              <div class="control">
+                <button type="button" class="button is-light" @click="closeModal">Cancel</button>
+              </div>
+            </div>
+          </form>
+        </section>
+      </div>
+    </div>
+
   </div>
 </template>
 
 <script>
-import axios from 'axios';
-import { toast } from 'bulma-toast';
+import axios from 'axios'
+import { toast } from 'bulma-toast'
+import { getCookie } from '@/utils/cookies-utils.js'
 
 export default {
     data() {
@@ -138,44 +171,79 @@ export default {
           isDeleteModalActive: false,
           isShareModalActive: false,
           isHideModalActive: false,
+          isImportModalActive: false,
           selectedSound: null,
           street: '',
           postcode: '',
           locality: '',
           country: '',
-          mapbox_token: null,
+          mapboxToken: null,
+          selectedFile: null,
         };
     },
-    created() {
-      this.getUserId().then(() =>{
-        this.fetchSounds();
-      });
+    async created() {
+      await this.getUserId()
+      await this.fetchSounds()
+      await this.get_mapbox_api_key()
     },
     methods: {
-      async getUserId() {
-        try {
-          const response = await axios.get('/api/v1/users/me/')
-          const user = response.data
+    async getUserId() {
+      try {
+          const token = getCookie('token');
+          const response = await axios.get('/api/v1/users/me/', {
+              headers: {
+                  'Authorization': 'Token ' + token,
+              }
+          });
+          const user = response.data;
           this.userId = user.id;
-        } catch (error) {
+      } catch (error) {
           console.error('Error:', error);
-        }
+      }
     },
+    onFileChange(event){
+      this.selectedFile = event.target.files[0];
+    },
+    showImportModal() {
+      this.isImportModalActive = true;
+    },
+    hideImportModal() {
+      this.isImportModalActive = false;
+      this.selectedFile = null;
+    },
+    async importMeasure() {
+      if (!this.selectedFile) {
+        alert('Please select a file to upload.');
+        return;
+      }
 
+      const formData = new FormData();
+      formData.append('file', this.selectedFile);
 
-    fetchSounds() {
-      fetch('http://127.0.0.1:8000/api/v1/sounds/', {
-        headers: {
-          'Authorization': 'Bearer ' + localStorage.getItem('token') 
-        }
-      })
-      .then(response => response.json())
-      .then(data => {
-        this.sounds = data.filter(sound => sound.owner === this.userId); 
-      })
-      .catch((error) => {
+      try {
+        await axios.post('/api/v1/import_measure/', formData, {
+          headers: {
+            'Authorization': 'Token ' + getCookie('token'),
+          },
+        })
+        this.hideImportModal()
+        this.fetchSounds()
+      } catch (error) {
         console.error('Error:', error);
-      });
+      }
+    },
+    async fetchSounds() {
+
+      try {
+        const response = await axios.get('/api/v1/sounds/', {
+          headers: {
+            'Authorization': 'Token ' + getCookie('token'),
+          },
+        });
+        this.sounds = response.data.filter(sound => sound.owner === this.userId);
+      } catch (error) {
+        console.error('Error:', error);
+      } 
     },
     cardColor(avg){
       if (avg < 70) {
@@ -194,32 +262,27 @@ export default {
       this.isDeleteModalActive = false;
       this.selectedSound = null;
     },
-    deleteSound() {
-      const token = localStorage.getItem('token');
-      fetch(`http://127.0.0.1:8000/api/v1/sounds/${this.selectedSound.id}/`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': 'Token ' + token,
-        },
-      })
-      .then(response => {
-        if (response.ok) {
-          this.sounds = this.sounds.filter(sound => sound.id !== this.selectedSound.id);
-          this.hideDeleteModal();
-
-          toast({
+    async deleteSound() {
+      try {
+        await axios.delete(`/api/v1/sounds/${this.selectedSound.id}/`, {
+          headers: {
+            'Authorization': 'Token ' + getCookie('token'),
+          },
+        });
+        this.sounds = this.sounds.filter(sound => sound.id !== this.selectedSound.id);
+        this.hideDeleteModal();
+          
+        toast({
             message: 'Sound deleted successfully',
             type: 'is-success',
             dismissible: true,
             pauseOnHover: true,
             duration: 2000,
             position: 'bottom-right',
-          })
+          });
+        } catch (error) {
+          console.error('Error:', error);
         }
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      });
     },
     showShareModal(sound) {
       this.selectedSound = sound;
@@ -229,22 +292,75 @@ export default {
       this.isShareModalActive = false;
       this.selectedSound = null;
     },
-    confirmShare() {
-      const token = localStorage.getItem('token');
-      const recordData = {
-        is_shared: true,
-      };
-      fetch(`http://127.0.0.1:8000/api/v1/sounds/${this.selectedSound.id}/`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Token ' + token
-        },
-        body: JSON.stringify(recordData)
-      })
-      
-      this.hideShareModal();
-      toast({
+    async confirmShare() {
+      try {
+        await axios.patch(`/api/v1/sounds/${this.selectedSound.id}/`, {
+          is_shared: true,
+        }, {
+          headers: {
+            'Authorization': 'Token ' + getCookie('token'),
+            'Content-Type': 'application/json',
+          },
+        });
+        this.hideShareModal();
+        
+        toast({
+            message: 'Sound shared successfully',
+            type: 'is-success',
+            dismissible: true,
+            pauseOnHover: true,
+            duration: 2000,
+            position: 'bottom-right',
+          });
+
+        this.$router.push('/sound-map');
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    },
+
+    async get_mapbox_api_key() {
+      try {
+        const response = await axios.get('/api/v1/get-mapbox-api-key/');
+        this.mapboxToken = response.data.mapbox_api_key;
+      } catch (error) {
+        console.error('Error fetching Mapbox token:', error);
+      }
+    },
+    async shareSound() {
+
+      try {
+        const location = `${this.street} ${this.postcode} ${this.locality}, ${this.country}`;
+
+        const mapboxResponse = await axios.get(`https://api.mapbox.com/search/geocode/v6/forward?q=${location}`, {
+          params: {
+            access_token: this.mapboxToken,
+          },
+        });
+
+        if (mapboxResponse.data.features && mapboxResponse.data.features.length > 0) {
+          const coordinates = mapboxResponse.data.features[0].properties.coordinates;
+
+          
+          const [lng, lat] = [coordinates.longitude, coordinates.latitude];
+          
+
+          await axios.patch(`/api/v1/sounds/${this.selectedSound.id}/`, {
+            location: location,
+            latitude: lat,
+            longitude: lng,
+            is_shared: true,
+          }, {
+            headers: {
+              'Authorization': 'Token ' + getCookie('token'),
+              'Content-Type': 'application/json',
+            },
+          
+          });
+
+          this.hideShareModal();
+
+          toast({
             message: 'Sound shared successfully',
             type: 'is-success',
             dismissible: true,
@@ -252,63 +368,14 @@ export default {
             duration: 2000,
             position: 'bottom-right',
           })
-      this.$router.push('/sound-map');
-    },
-    get_mapbox_api_key() {
-      fetch('http://localhost:8000/api/v1/get-mapbox-api-key/')
-        .then(response => response.json())
-        .then(data => {
-          this.mapboxToken = data.mapbox_api_key;
-        })
-        .catch((error) => {
-          console.error('Error fetching Mapbox token:', error);
-        });
-    },
-    shareSound() {
-      const token = localStorage.getItem('token');
-      const location = `${this.street} ${this.postcode} ${this.locality}, ${this.country}`;
-
-      fetch(`https://api.mapbox.com/search/geocode/v6/forward?q=${location}&access_token=${this.mapboxToken}`)
-        .then(response => response.json())
-        .then(data => {
-          const SoundData = data.features[0].properties.coordinates
-          
-          if (SoundData) {
-            const lng = SoundData.longitude
-            const lat = SoundData.latitude
-            const recordData = {
-              location: location,
-              latitude: lat,
-              longitude: lng,
-              is_shared: true,
-            };
-            fetch(`http://127.0.0.1:8000/api/v1/sounds/${this.selectedSound.id}/`, {
-              method: 'PATCH',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Token ' + token
-              },
-              body: JSON.stringify(recordData)
-            })
-             this.hideShareModal();
-
-             toast({
-                message: 'Sound shared successfully',
-                type: 'is-success',
-                dismissible: true,
-                pauseOnHover: true,
-                duration: 2000,
-                position: 'bottom-right',
-              })
 
              this.$router.push('/sound-map');
           } else {
               console.error('Problem with location');
           }
-        })
-        .catch((error) => {
+        } catch(error) {
           console.error('Error:', error);
-        });
+        }
     },
     showHideModal(sound) {
       this.selectedSound = sound;
@@ -318,39 +385,36 @@ export default {
       this.isHideModalActive = false;
       this.selectedSound = null;
     },
-    hideSound(){
-      const token = localStorage.getItem('token');
-      const soundData = {
-        is_shared: false,
-      };
+    async hideSound() {
+      try {
+        await axios.patch(`/api/v1/sounds/${this.selectedSound.id}/`, {
+          is_shared: false,
+        }, {
+          headers: {
+            'Authorization': 'Token ' + getCookie('token'),
+            'Content-Type': 'application/json',
+          },
+        });
 
-      fetch(`http://127.0.0.1:8000/api/v1/sounds/${this.selectedSound.id}/`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Token ' + token
-        },
-        body: JSON.stringify(soundData)
-      })
-      .then(response => response.json())
+        this.sounds = this.sounds.map(sound => {
+          if (sound.id === this.selectedSound.id) {
+            return { ...sound, is_shared: false };
+          }
+          return sound;
+        });
+        this.hideHideModal();
 
-      this.sounds = this.sounds.map(sound => {
-        if (sound.id === this.selectedSound.id) {
-          return { ...sound, is_shared: false };
-        }
-        return sound;
-      });
-      this.hideHideModal();
-
-      toast({
-            message: 'Sound hided successfully',
-            type: 'is-success',
-            dismissible: true,
-            pauseOnHover: true,
-            duration: 2000,
-            position: 'bottom-right',
-          })
-
+        toast({
+          message: 'Sound hidden successfully',
+          type: 'is-success',
+          dismissible: true,
+          pauseOnHover: true,
+          duration: 2000,
+          position: 'bottom-right',
+        });
+      } catch (error) {
+        console.error('Error:', error);
+      }
     }
   }
 };

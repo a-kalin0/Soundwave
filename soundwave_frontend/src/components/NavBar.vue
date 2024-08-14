@@ -58,7 +58,7 @@
 
 <script>
 import ThemeSwitcher from './ThemeSwitcher.vue';
-import { mapState } from 'vuex';
+import { mapState, mapMutations } from 'vuex';
 
 export default {
   name: 'NavBar',
@@ -66,12 +66,21 @@ export default {
     ThemeSwitcher
   },
   computed: {
-    ...mapState(['isAuthenticated'])
+    ...mapState(['isAuthenticated', 'language']),
+  },
+  watch: {
+    language(newLang) {
+      this.$i18n.locale = newLang;
+    }
   },
   methods: {
+    ...mapMutations(['setLanguage']),
     changeLocale(locale) {
-      this.$i18n.locale = locale;
+      this.setLanguage(locale);
     }
+  },
+  created() {
+    this.$i18n.locale = this.language; // Appliquer la langue initiale depuis Vuex
   }
 }
 </script>

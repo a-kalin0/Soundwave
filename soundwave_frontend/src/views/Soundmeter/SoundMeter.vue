@@ -22,6 +22,7 @@
           <button @click="stopRecording" v-if="recording">Stop Recording</button>
           <button @click="showModal" v-if="stopped">Save Record</button>
           <button @click="resetRecord" v-if="stopped">Make Another Record</button>
+          <button @click="measureWithArduino">Measure with your Electronic Soundmeter</button>
         </div>
       </div>
       <div class="column">
@@ -201,10 +202,6 @@ export default {
         this.stopped = true;
         this.stopTimer();
 
-        if (this.measureInterval) {
-          clearInterval(this.measureInterval);
-          this.measureInterval = null;
-        }
         if (this.workletNode) {
           this.workletNode.disconnect();
         }
@@ -222,45 +219,41 @@ export default {
         this.isModalActive = false;
       },
       async saveRecord() {
-        const userId = await this.getUserId();
-        const recordData = {
-          'title': this.title,
-          'description': this.description,
-          'duration': this.time,
-          'min_db_size': Math.round(this.min),
-          'max_db_size': Math.round(this.max),
-          'avg_db_size': Math.round(this.average),
-          'owner': userId
-        };
+        try {
+          const userId = await this.getUserId();
+          const recordData = {
+            'title': this.title,
+            'description': this.description,
+            'duration': this.time,
+            'min_db_size': Math.round(this.min),
+            'max_db_size': Math.round(this.max),
+            'avg_db_size': Math.round(this.average),
+            'owner': userId
+          };
 
-        fetch('http://127.0.0.1:8000/api/v1/sounds/', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(recordData)
-          
-        })
-         .then(response => response.json())
-         .then(          
-          toast({
+          await axios.post('/api/v1/sounds/', recordData, {
+            headers: {
+              'Content-Type': 'application/json',
+            }
+          });
+                
+        toast({
             message: 'Sound created successfully',
             type: 'is-success',
             dismissible: true,
             pauseOnHover: true,
             duration: 2000,
             position: 'bottom-right',
-          }))
-         .then(this.$router.push('/my-sounds'))
-         .catch((error) => {
-          console.error('Error:', error);
-         });
+          })
+        this.$router.push('/my-sounds');
+        } catch (error) {
+        console.error('Error:', error);
+        }
       },
       async getUserId(){
         try {
           const response = await axios.get('/api/v1/users/me/')
           const user = response.data
-
           return user.id;
         } catch (error) {
           console.error('Error:', error);
@@ -299,8 +292,15 @@ export default {
         this.average = 0;
         this.sampleCount = 0;
         this.totalDb = 0;
+      },
+      measureWithArduino() {
+        try {
+          axios.get('/api/v1/electronic_sound_meter');
+        } catch(error) {
+          console.error('Error:', error);
+        }
       }
-    },
+    }
   }
 </script>
   

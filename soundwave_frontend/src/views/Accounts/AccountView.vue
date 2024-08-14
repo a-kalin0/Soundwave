@@ -3,7 +3,6 @@
         <div class="columns is-multiline">
             <div class="column is-12">
                 <h1 class="title" v-if="user">Welcome back {{ user.username }} !! </h1>
-                
             </div>
 
             <div class="column is-6" v-if="user">
@@ -66,6 +65,7 @@
 
 <script>
 import axios from 'axios'
+import Cookies from 'js-cookie';
 import { mapState, mapMutations } from 'vuex'
 
 export default {
@@ -110,13 +110,13 @@ export default {
         },
         async deactivateAccount() {
             try {
-                const token = localStorage.getItem("token")
+                const token = Cookies.get("token")
                 axios.defaults.headers.common["Authorization"] = `Token ${token}`
                 
                 await axios.post("/api/v1/deactivate-account/")
 
-                localStorage.removeItem("token")
-                localStorage.removeItem("user")
+                Cookies.remove('token', { path: '/' })
+                Cookies.remove('user', { path: '/' })
 
                 axios.defaults.headers.common["Authorization"] = ""
 
@@ -136,13 +136,13 @@ export default {
         },
         async deleteAccount() {
             try {
-                const token = localStorage.getItem("token")
+                const token = Cookies.get('token')
                 axios.defaults.headers.common["Authorization"] = `Token ${token}`
 
                 await axios.delete("/api/v1/delete-account")
 
-                localStorage.removeItem("token")
-                localStorage.removeItem("user")
+                Cookies.remove('token', { path: '/' })
+                Cookies.remove('user', { path: '/' })
 
                 axios.defaults.headers.common["Authorization"] = ""
 
@@ -162,13 +162,13 @@ export default {
         },
         async logout() {
             try {
-                const token = localStorage.getItem("token")
+                const token = Cookies.get('token')
                 axios.defaults.headers.common["Authorization"] = `Token ${token}`
 
                 await axios.post("/api/v1/token/logout/")
 
-                localStorage.removeItem("token")
-                localStorage.removeItem("user")
+                Cookies.remove('token', { path: '/' })
+                Cookies.remove('user', { path: '/' })
 
                 axios.defaults.headers.common["Authorization"] = ""
 
@@ -191,7 +191,7 @@ export default {
                 const response = await axios.get('/api/v1/users/me/')
                 const user = response.data
                 this.setUser(user)
-                localStorage.setItem('user', JSON.stringify(user))
+                Cookies.set('user', JSON.stringify(user), { expires: 1, path: '/' })
             } catch (error) {
                 console.error('Error fetching user:', error)
             }

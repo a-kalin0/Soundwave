@@ -95,7 +95,7 @@ export default {
                 }
 
                 try {
-                    axios.post("/api/v1/users/", formData)
+                    await axios.post("/api/v1/users/", formData)
                     toast({
                         message: 'Account created successfully. Please check your email to activate your account.',
                         type: 'is-success',

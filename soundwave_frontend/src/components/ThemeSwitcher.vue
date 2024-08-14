@@ -1,36 +1,32 @@
-<!-- src/components/ThemeSwitcher.vue -->
-<template>
+  <template>
     <button @click="toggleTheme" class="button is-primary">
       {{ isDarkTheme ? $t('themeLight') : $t('themeDark') }} 
     </button>
   </template>
   
   <script>
+  import { mapState } from 'vuex';
+  import { mapMutations } from 'vuex';
+  
   export default {
-    data() {
-      return {
-        isDarkTheme: false
-      };
-    },
     computed: {
-      themeClass() {
-        return this.isDarkTheme ? 'dark-theme' : 'light-theme';
+      ...mapState(['theme']),
+      isDarkTheme() {
+        return this.theme === 'dark';
       }
     },
     methods: {
+      ...mapMutations(['setTheme']),
       toggleTheme() {
-        this.isDarkTheme = !this.isDarkTheme;
-        document.documentElement.className = this.themeClass;
+        const newTheme = this.isDarkTheme ? 'light' : 'dark';
+        this.setTheme(newTheme);
+        document.documentElement.className = newTheme;
       }
     },
     created() {
-      // Apply the initial theme based on isDarkTheme
-      document.documentElement.className = this.themeClass;
+      // Appliquer le thème initial
+      document.documentElement.className = this.theme;
     }
   };
   </script>
-  
-  <style scoped>
-  
-  </style>
   

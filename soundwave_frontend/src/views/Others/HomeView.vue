@@ -1,7 +1,7 @@
 <template>
-  <div class="home">
+  <div :class="theme" class="home">
 
-    <section class="hero is-medium is-dark mb-6">
+    <section :class="themeClass" class="hero is-medium mb-6">
         <div class="hero-body has-text-centered">
             <p class="title mb-6">
               {{ $t('welcomeTitle') }}
@@ -140,11 +140,32 @@
 </template>
 
 <script>
-
+import { mapState } from 'vuex'
 
 export default {
   name: 'HomeView',
-  components: {
+  computed: {
+    ...mapState(['theme', 'language']),
+    themeClass() {
+      return this.theme === 'dark' ? 'is-dark' : 'is-light'
+    }
+  },
+  mounted() {
+    document.title = this.$t('welcomeTitle') + ' | Soundwave'
   }
 }
 </script>
+
+<style scoped>
+.is-light {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.is-dark {
+  background-color: #333;
+  color: #f0f0f0;
+}
+
+/* Autres styles selon vos besoins */
+</style>
