@@ -24,6 +24,6 @@ jobs:
           if [ -d /var/www/soundwave ]; then 
             cd /var/www/soundwave && git pull origin production; 
           else 
-            git clone https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.git /var/www/soundwave;
+            git clone https://github.com/a-kalin0/Soundwave.git /var/www/soundwave;
           fi
         "
