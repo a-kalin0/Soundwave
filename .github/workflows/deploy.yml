@@ -3,7 +3,7 @@ name: Deploy to DigitalOcean Droplet
 on:
   push:
     branches:
-      - production  # Déclenche le workflow sur chaque push vers la branche 'production'
+      - production
 
 jobs:
   deploy:
@@ -18,13 +18,12 @@ jobs:
       with:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-    - name: Copy files to Droplet
+    - name: Deploy to Droplet
       run: |
-        ssh -o StrictHostKeyChecking=no root@${{ secrets.DROPLET_IP }} "rm -rf /var/www/soundwave && mkdir -p /var/www/soundwave"
-        scp -r ./* root@${{ secrets.DROPLET_IP }}:/var/www/soundwave
-
-    - name: Execute remote commands
-      run: |
-        ssh -o StrictHostKeyChecking=no root@${{ secrets.DROPLET_IP }} << 'EOF'
-          cd /var/www/soundwave
-
+        ssh root@${{ secrets.DROPLET_IP }} "
+          if [ -d /var/www/soundwave ]; then 
+            cd /var/www/soundwave && git pull origin production; 
+          else 
+            git clone https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.git /var/www/soundwave;
+          fi
+        "
