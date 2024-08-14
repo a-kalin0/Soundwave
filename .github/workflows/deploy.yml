@@ -20,7 +20,7 @@ jobs:
 
     - name: Deploy to Droplet
       run: |
-        ssh root@${{ secrets.DROPLET_IP }} "
+        ssh -o StrictHostKeyChecking=no root@${{ secrets.DROPLET_IP }} "
           if [ -d /var/www/soundwave ]; then 
             cd /var/www/soundwave && git pull origin production; 
           else 
