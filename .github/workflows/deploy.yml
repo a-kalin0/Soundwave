@@ -21,9 +21,5 @@ jobs:
     - name: Deploy to Droplet
       run: |
         ssh -o StrictHostKeyChecking=no root@${{ secrets.DROPLET_IP }} "
-          if [ -d /var/www/soundwave ]; then 
-            cd /var/www/soundwave && git pull origin production; 
-          else 
-            git clone https://github.com/a-kalin0/Soundwave.git /var/www/soundwave;
-          fi
+          git clone https://github.com/a-kalin0/Soundwave.git /var/www/soundwave;
         "
