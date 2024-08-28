@@ -8,12 +8,11 @@
         <div class="card-content">
             <h3 class="is-size-4">{{ article.title }}</h3>
             <p>{{ article.author }}</p>
-            <router-link :to="article.get_absolute_url" class="button is-dark mt-4">View details</router-link>
-            <router-link
-                :to="'/category/' + article.category"
+            <router-link :to="article.get_absolute_url" class="button mt-4">View details</router-link>
+            <p
                 :class="categoryClass(article.category)"
                 class = "button mt-4"
-            >{{ article.category }}</router-link>
+            >{{ article.category }}</p>
 
             
         </div>
@@ -52,5 +51,9 @@ export default {
 }
 .card-content {
     flex-grow: 1;
+}
+
+.button {
+    margin: 1px; 
 }
 </style>

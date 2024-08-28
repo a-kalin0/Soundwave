@@ -15,7 +15,8 @@ class ArticleSerializer(serializers.ModelSerializer):
             "get_absolute_url",
             "content",
             "get_image",
-            "get_thumbnail"
+            "get_thumbnail",
+            "publication_date"
         )
 
 class CategorySerializer(serializers.ModelSerializer):

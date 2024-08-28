@@ -13,24 +13,14 @@ const routes = [
     component: () => import('../views/Others/AboutView.vue')
   },
   {
-    path: '/privacy',
-    name: 'Privacy',
-    component: () => import('../views/Others/PrivacyView.vue')
+    path: '/electronic',
+    name: 'electronic',
+    component: () => import('../views/Others/ElectronicSoundmeterView.vue')
   },
   {
     path: '/terms',
     name: 'Terms',
     component: () => import('../views/Others/TermsView.vue')
-  },
-  {
-    path: '/cookies',
-    name: 'Cookies',
-    component: () => import('../views/Others/CookiesView.vue')
-  },
-  {
-    path: '/accessibility',
-    name: 'Accessibility',
-    component: () => import('../views/Others/AccessibilityView.vue')
   },
   {
     path: '/sign-up',
@@ -63,12 +53,18 @@ const routes = [
   {
     path: '/reset-password',
     name: 'ResetPassword',
-    component: () => import('../views/Accounts/ResetPassword.vue')
+    component: () => import('../views/Accounts/ResetPassword.vue'),
+    meta: {
+      requireLogin: true,
+    }
   },
   {
     path: '/password/reset/confirm/:uid/:token',
     name: 'ResetpasswordConfirm',
-    component: () => import('../views/Accounts/ResetPasswordConfirm.vue')
+    component: () => import('../views/Accounts/ResetPasswordConfirm.vue'),
+    meta: {
+      requireLogin: true,
+    }
   },
   {
     path: '/activate/:uid/:token',
@@ -83,9 +79,11 @@ const routes = [
   {
     path: '/my-sounds',
     name: 'MySounds',
-    component: () => import('../views/Soundmeter/MySounds.vue')
+    component: () => import('../views/Soundmeter/MySounds.vue'),
+    meta: {
+      requireLogin: true,
+    }
   },
-
   {
     path: '/sound-news',
     name: 'SoundNews',
@@ -95,11 +93,6 @@ const routes = [
     path: '/:category_slug/:article_slug/',
     name: 'Article',
     component: () => import('../views/Soundnews/Article.vue')
-  },
-  {
-    path: '/:category_slug',
-    name: 'Category',
-    component: () => import('../views/Soundnews/Category.vue')
   },
   {
     path: '/sound-map',

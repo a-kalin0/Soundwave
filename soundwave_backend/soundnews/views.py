@@ -25,26 +25,3 @@ class ArticleDetail(APIView):
         article = self.get_object(category_slug, article_slug)
         serializer = ArticleSerializer(article)
         return Response(serializer.data)
-
-class CategoryDetail(APIView):
-    def get_object(self, category_slug):
-        try:
-            return Category.objects.get(slug=category_slug)
-        except Category.DoesNotExist:
-            raise Http404
-    
-    def get(self, request, category_slug, format=None):
-        category = self.get_object(category_slug)
-        serializer = CategorySerializer(category)
-        return Response(serializer.data)
-
-@api_view(['POST'])
-def search(request):
-    query = request.data.get('query', '')
-
-    if query:
-        articles = Article.objects.filter(Q(name__icontains=query) | Q(description__icontains=query))
-        serializer = ArticleSerializer(articles, many=True)
-        return Response(serializer.data)
-    else:
-        return Response({"stories": []})

@@ -13,8 +13,17 @@ const messages = {
         soundNews: 'Soundnews',
         soundMeter: 'Soundmeter',
         soundMap: 'Soundmap',
-        more: 'See more',
-
+        electronic : 'Electronic',
+        mySounds: 'My Sounds',
+        homeContent: 'Soundwave is my final project (TFE) of my bachelor’s degree in computer technology at the EPHEC of Louvain La Neuve.',
+        soundmeterSub: 'Use the online sound level meter to measure noise levels around you.',
+        soundmeterContent: 'This feature allows you to get an estimate of the decibel levels using your microphone.',
+        soundmapSub: 'Explore the interactive map of sounds shared by users.',
+        soundmapContent: 'Find out noise levels in different regions with measurements shared by the Soundwave community.',
+        soundnewsSub: 'Stay up to date on the latest news regarding noise pollution.',
+        soundnewsContent: 'Find articles on noise pollution.',
+        electronicSub: 'Refer to the electronic sound level meter documentation.',
+        electronicContent: 'Access the documentation and source code to create your own electronic sound level meter.',
     },
     'fr': {
         soundwave: 'Soundwave : L\'Oreille de la Terre',
@@ -28,7 +37,17 @@ const messages = {
         soundNews: 'Soundnews',
         soundMeter: 'Sonomètre',
         soundMap: 'Carte sonore',
-        more: 'Voir plus',
+        electronic : 'Électronique',
+        mySounds: 'Mes sons',
+        homeContent: 'Soundwave est mon projet de fin d\'étude (TFE) de mon bachelier en technologie de l\'informatique à l\'EPHEC de Louvain La Neuve.',
+        soundmeterSub: 'Utilisez le sonomètre en ligne pour mesurer les niveaux sonores autour de vous.',
+        soundmeterContent: 'Cette fonctionnalité vous permet d\'obtenir une estimation des niveaux de décibels en utilisant votre microphone.',
+        soundmapSub: 'Explorez la carte interactive des sons partagés par les utilisateurs.',
+        soundmapContent: 'Découvrez les niveaux de bruit dans différentes régions grâce aux mesures partagées par la communauté Soundwave.',
+        soundnewsSub: 'Restez informé des dernières nouvelles concernant la pollution sonore.',
+        soundnewsContent: 'Retrouvez des articles sur la pollution sonore.',
+        electronicSub: 'Consultez la documentation du sonomètre électronique.',
+        electronicContent: 'Accédez à la documentation et au code source pour créer votre propre sonomètre électronique.',
     },
     'de': {
         soundwave: 'Soundwave : Das Ohr Der Erde',
@@ -42,7 +61,17 @@ const messages = {
         soundNews: 'Soundnews',
         soundMeter: 'Schallpegelmesser',
         soundMap: 'Soundkarte',
-        more: 'Mehr sehen',
+        electronic : 'Elektronisch',
+        mySounds: 'Meine Geräusche',
+        homeContent: 'Soundwave ist mein Abschlussprojekt (TFE) meines Bachelorstudiums in Computertechnologie an der EPHEC in Louvain-la-Neuve.',
+        soundmeterSub: 'Verwenden Sie den Online-Schallpegelmesser, um die Lautstärke in Ihrer Umgebung zu messen.',
+        soundmeterContent: 'Mit dieser Funktion können Sie die Dezibelwerte mithilfe des Mikrofons abschätzen.',
+        soundmapSub: 'Erkunden Sie die interaktive Karte der von den Benutzern geteilten Klänge.',
+        soundmapContent: 'Entdecken Sie die Geräuschpegel in verschiedenen Regionen mit den von der Soundwave-Community geteilten Messwerten.',
+        soundnewsSub: 'Bleiben Sie auf dem Laufenden über die neuesten Nachrichten zu Lärmbelästigung.',
+        soundnewsContent: 'Hier finden Sie Artikel über Lärmbelästigung.',
+        electronicSub: 'Lesen Sie die Dokumentation des elektronischen Schallpegelmessers.',
+        electronicContent: 'Greifen Sie auf die Dokumentation und den Quellcode zu, um Ihr eigenes elektronisches Schallpegelmessgerät zu erstellen.',
     },
     'nl': {
         soundwave: 'Soundwave : Het Oor Van De Aarde',
@@ -53,18 +82,27 @@ const messages = {
         themeDark: 'Dark Theme',
         accountButton: 'Account',
         loginButton: 'Aansluiting',
-        soundNews: 'Soundnews',
+        soundNews: 'Geluidsnieuws',
         soundMeter: 'Geluidsmeter',
         soundMap: 'Geluidskaart',
-        more: 'Bekijk meer',
+        electronic : 'Elektronisch',
+        mySounds: 'Mijn liedjes',
+        homeContent: 'Soundwave is mijn laatste project (TFE) van mijn bachelor in computertechnologie aan de EPHEC van Louvain La Neuve.',
+        soundmeterSub: 'Gebruik de online geluidsniveaumeter om de geluidsniveaus om je heen te meten.',
+        soundmeterContent: 'Met deze functie kunt u een schatting krijgen van de decibelniveaus met uw microfoon.',
+        soundmapSub: 'Verken de interactieve kaart met geluiden die door gebruikers worden gedeeld.',
+        soundmapContent: 'Ontdek geluidsniveaus in verschillende regio\'s met metingen die worden gedeeld door de Soundwave-gemeenschap.',
+        soundnewsSub: 'Bleiben Sie auf dem Laufenden über die neuesten Nachrichten zu Lärmbelästigung.',
+        soundnewsContent: 'Vind artikelen over geluidsoverlast.',
+        electronicSub: 'Raadpleeg de elektronische geluidsniveaumeterdocumentatie.',
+        electronicContent: 'Toegang tot de documentatie en broncode om uw eigen elektronische geluidsniveaumeter te maken.',
     },
 }
 
-// eslint-disable-next-line
 const i18n =  createI18n({
-    locale: 'en', // set locale
-    fallbackLocale: 'fr', // set fallback locale
-    messages, // set locale messages
+    locale: 'en', 
+    fallbackLocale: 'fr',
+    messages, 
 });
 
 export default i18n;

@@ -186,6 +186,9 @@ export default {
       await this.fetchSounds()
       await this.get_mapbox_api_key()
     },
+    mounted() {
+      document.title = this.$t('mySounds');
+    },
     methods: {
     async getUserId() {
       try {
