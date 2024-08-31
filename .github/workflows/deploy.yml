@@ -30,7 +30,7 @@ jobs:
       working-directory: ./soundwave_frontend
 
     - name: Collect static files
-      run: python manage.py collectstatic --noinput
+      run: python ./soundwave_backend/manage.py collectstatic --noinput
 
     - name: Deploy to Heroku
       env:
