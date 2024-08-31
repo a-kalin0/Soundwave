@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import os
+import dj_database_url
 from pathlib import Path
 from decouple import config
 import os
@@ -93,6 +95,7 @@ WSGI_APPLICATION = 'soundwave_backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+
 if DEBUG:
 
     DATABASES = {
@@ -112,6 +115,7 @@ else :
         'default': dj_database_url.config(
             default=config('DATABASE_URL')
         )
+
     }
 
 
