@@ -45,7 +45,9 @@ jobs:
         MAPBOX_API_KEY: ${{ secrets.MAPBOX_API_KEY }}
         MAPTILER_API_KEY: ${{ secrets.MAPTILER_API_KEY }}
         SECRET_KEY: ${{ secrets.SECRET_KEY }}
-      run: python ./soundwave_backend/manage.py collectstatic --noinput
+      run: |
+        python ./soundwave_backend/manage.py collectstatic --noinput
+        python manage.py migrate
 
     - name: Deploy to Heroku
       run: |
