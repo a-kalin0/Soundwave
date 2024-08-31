@@ -8,7 +8,7 @@ import i18n from '@/plugins/i18n';
 import FlagIcon from 'vue-flag-icon'
 
 
-axios.defaults.baseURL = 'http://127.0.0.1:8000'
+axios.defaults.baseURL = 'https://soundwave-122fb7238644.herokuapp.com'
 
 createApp(App).use(store).use(router, axios).use(i18n).use(FlagIcon).mount('#app')
 
