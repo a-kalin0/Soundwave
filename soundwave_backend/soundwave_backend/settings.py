@@ -90,14 +90,11 @@ WSGI_APPLICATION = 'soundwave_backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+DATABASE_URL = config("DATABASE_URL")
+
 DATABASES = {
-    config("DATABASE_URL", default=None):
-        DATABASES = {
-            "default": dj_database_url.config(
-                default=config("DATABASE_URL"),
-                conn_max_age=1800,  
-            )
-        }
+        "default": dj_database_url.config(default=DATABASE_URL, 
+                                        conn_max_age=1800),
     }
 
 
