@@ -50,5 +50,4 @@ jobs:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         HEROKU_APP_NAME: "soundwave"
       run: |
-        git remote add heroku https://git.heroku.com/${{ env.HEROKU_APP_NAME }}.git
-        git push heroku main
+        git push heroku https://heroku:{{ env.HEROKU_API_KEY }}@git.heroku.com/${{ env.HEROKU_APP_NAME }}.git HEAD:master
