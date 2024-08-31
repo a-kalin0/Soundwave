@@ -46,8 +46,5 @@ jobs:
       run: python ./soundwave_backend/manage.py collectstatic --noinput
 
     - name: Deploy to Heroku
-      env:
-        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        HEROKU_APP_NAME: "soundwave"
       run: |
-        git push heroku https://heroku:{{ env.HEROKU_API_KEY }}@git.heroku.com/${{ env.HEROKU_APP_NAME }}.git HEAD:master
+        git push heroku https://heroku:{{secrets.HEROKU_API_KEY}}@git.heroku.com/soundwave.git HEAD:master
