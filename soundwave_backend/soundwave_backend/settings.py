@@ -96,7 +96,7 @@ WSGI_APPLICATION = 'soundwave_backend.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 
-if DEBUG:
+'''if DEBUG:
 
     DATABASES = {
         'default': {
@@ -109,7 +109,7 @@ if DEBUG:
         }
     }
 
-else :
+else :'''
 
     DATABASES = {
         'default': dj_database_url.config(
