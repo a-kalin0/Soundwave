@@ -91,14 +91,8 @@ WSGI_APPLICATION = 'soundwave_backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-if config("DATABASE_URL", default=None):
-    DATABASES = {
-        "default": dj_database_url.config(
-            default=config("DATABASE_URL"),
-            conn_max_age=1800,  # Optionnel: ajustez selon vos besoins
-        )
-    }
-else:
+if DEBUG:
+    
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -109,6 +103,15 @@ else:
             'PORT': config('DB_PORT'),
         }
     }
+
+else:
+
+    DATABASE_URL = config("DATABASE_URL")
+
+    DATABASES = {
+            "default": dj_database_url.config(default=DATABASE_URL, 
+                                            conn_max_age=1800),
+        }
 
 
 # Password validation
