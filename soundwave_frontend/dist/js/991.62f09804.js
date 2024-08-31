@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunksoundwave_frontend"]=self["webpackChunksoundwave_frontend"]||[]).push([[991],{5991:function(n,e,r){r.r(e),r.d(e,{default:function(){return f}});var u=r(6768);function o(n,e,r,o,t,a){return(0,u.uX)(),(0,u.CE)("h1",null,"Error 404 Page not found")}var t={name:"PageNotFound"},a=r(1241);const d=(0,a.A)(t,[["render",o]]);var f=d}}]);
+//# sourceMappingURL=991.62f09804.js.map
