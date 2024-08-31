@@ -91,14 +91,14 @@ WSGI_APPLICATION = 'soundwave_backend.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-config("DATABASE_URL", default=None):
-    DATABASES = {
-        "default": dj_database_url.config(
-            default=config("DATABASE_URL"),
-            conn_max_age=1800,  
-        )
+    config("DATABASE_URL", default=None):
+        DATABASES = {
+            "default": dj_database_url.config(
+                default=config("DATABASE_URL"),
+                conn_max_age=1800,  
+            )
+        }
     }
-}
 
 
 # Password validation
