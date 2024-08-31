@@ -1,17 +1,31 @@
 <template>
-  <div class="about">
-
-<section class="hero is-medium is-dark mb-6">
-    <div class="hero-body has-text-centered">
-        <p class="title mb-6">
+    <div class="about" :class="themeClass">
+      <section class="hero is-medium mb-6" :class="themeClass">
+        <div class="hero-body has-text-centered">
+          <p class="title mb-6" :class="themeClass">
             About me
-        </p>
-        <p class="subtitle">
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Animi veniam deleniti ad quo iste, corrupti maiores ut eum accusantium eligendi! Assumenda soluta recusandae asperiores ipsam, culpa ab reprehenderit aliquid perspiciatis? 
-
-        </p>
+          </p>
+          <p class="subtitle" :class="themeClass">
+            Here's the link to my portfolio : <a href="https://a-kalin0.github.io" :class="themeClass">Click Here</a> !
+          </p>
+        </div>
+      </section>
     </div>
-</section>
-
-</div>
 </template>
+
+<script>
+import { mapState } from 'vuex'
+
+export default {
+  name: 'AboutView',
+  computed: {
+    ...mapState(['theme']),
+    themeClass() {
+      return this.theme === 'dark' ? 'is-dark' : 'is-light'
+    }
+  },
+  mounted() {
+    document.title = 'About Me';
+  }
+}
+</script>

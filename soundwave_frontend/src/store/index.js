@@ -6,8 +6,8 @@ export default createStore({
     isAuthenticated: false,
     token: '',
     user: null,
-    theme: 'light', // Valeur par défaut
-    language: 'en', // Valeur par défaut
+    theme: Cookies.get('theme') || 'light',
+    language: Cookies.get('language') || 'en', 
   },
   mutations: {
     initializeStore(state) {

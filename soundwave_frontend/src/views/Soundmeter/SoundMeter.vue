@@ -1,12 +1,12 @@
 <template>
-  <div class="home">
+  <div class="soundmeter" :class="themeClass">
 
-    <section class="hero is-medium is-dark mb-6">
+    <section class="hero is-medium mb-6" :class="themeClass">
         <div class="hero-body has-text-centered">
-            <p class="title mb-6">
+            <p class="title mb-6" :class="themeClass">
                 Welcome to the Soundmeter page !
             </p>
-            <p class="subtitle">
+            <p class="subtitle" :class="themeClass">
                 Here you can measure the sound with the online soundmeter ! Enjoy !
                 <br>
                 P.S. : Take attention to the fact that it can be less precise than the electronic soundmeter 
@@ -14,22 +14,22 @@
         </div>
     </section>
 
-    <div class="columns">
+    <div class="columns has-text-centered">
       <div class="column">
-        <p class="decibels is-dark">Current Decibel Level : {{ decibels.toFixed(2) }} dB</p>
+        <p class="decibels" :class="themeClass">Current Decibel Level : {{ decibels.toFixed(2) }} dB</p>
         <div class="controls">
-          <button @click="startRecording" v-if="!recording && !stopped">Start Recording</button>
-          <button @click="stopRecording" v-if="recording">Stop Recording</button>
-          <button @click="showModal" v-if="stopped">Save Record</button>
-          <button @click="resetRecord" v-if="stopped">Make Another Record</button>
-          <button @click="measureWithArduino">Measure with your Electronic Soundmeter</button>
+          <button @click="startRecording" v-if="!recording && !stopped" :class="buttonClass">Start Recording</button>
+          <button @click="stopRecording" v-if="recording" :class="buttonClass">Stop Recording</button>
+          <button @click="showModal" v-if="stopped" :class="buttonClass">Save Record</button>
+          <button @click="resetRecord" v-if="stopped" :class="buttonClass">Make Another Record</button>
+          <button v-if="!recording && !stopped && showElectronicButton" @click="measureWithArduino" :class="buttonClass">Measure with your Electronic Soundmeter</button>
         </div>
       </div>
       <div class="column">
-        <div class="timer">
+        <div class="timer" :class="themeClass">
           <p>Recording time : {{ formattedTime }}</p>
         </div>
-        <div class="stats">
+        <div class="stats" :class="themeClass">
           <div class="stat">
             <span>MIN : </span>
             <span>{{ min.toFixed(2) }} dB</span>
@@ -47,10 +47,10 @@
     </div>
 
     <!-- Save Record Modal -->
-    <div class="modal" :class="{ 'is-active': isModalActive }">
+    <div class="modal" :class="{ 'is-active': isModalActive, [themeClass]: true }">
       <div class="modal-background"></div>
-      <div class="modal-card">
-        <header class="modal-card-head">
+      <div class="modal-card" :class="themeClass">
+        <header class="modal-card-head" :class="themeClass">
           <p class="modal-card-title">Save Record</p>
           <button class="delete" @click="hideModal" aria-label="close"></button>
         </header>
@@ -59,31 +59,31 @@
             <div class="field">
               <label class="label">Title</label>
               <div class="control">
-                <input type="text" class="input" v-model="title" required>
+                <input type="text" class="input" v-model="title" required :class="themeClass">
               </div>
             </div>
             <div class="field">
               <label class="label">Description</label>
               <div class="control">
-                <textarea class="textarea" v-model="description" required></textarea>
+                <textarea class="textarea" v-model="description" required :class="themeClass"></textarea>
               </div>
             </div>
             <div class="field">
               <label class="label">Average dB</label>
               <div class="control">
-                <input type="text" class="input" :value="Math.round(average)" readonly>
+                <input type="text" class="input" :value="Math.round(average)" readonly :class="themeClass">
               </div>
             </div>
             <div class="field">
               <label class="label">Min dB</label>
               <div class="control">
-                <input type="text" class="input" :value="Math.round(min)" readonly>
+                <input type="text" class="input" :value="Math.round(min)" readonly :class="themeClass">
               </div>
             </div>
             <div class="field">
               <label class="label">Max dB</label>
               <div class="control">
-                <input type="text" class="input" :value="Math.round(max)" readonly>
+                <input type="text" class="input" :value="Math.round(max)" readonly :class="themeClass">
               </div>
             </div>
             <div class="field is-grouped">
@@ -104,6 +104,7 @@
 <script>
 import axios from 'axios';
 import { toast } from 'bulma-toast';
+import { mapState } from 'vuex';
   
 export default {
     name: 'SoundMeter',
@@ -116,6 +117,7 @@ export default {
         time : 0,
         recording: false,
         stopped: false,
+        showElectronicButton: true,
         timerInterval: null,
 
         audioContext: null,
@@ -131,16 +133,27 @@ export default {
       };
     },
     computed: {
+      ...mapState(['theme']),
+      themeClass() {
+        return this.theme === 'dark' ? 'is-dark' : 'is-light';
+      },
+      buttonClass() {
+        return this.theme === 'dark' ? 'button is-dark' : 'button is-light';
+      },
       formattedTime() {
         const minutes = Math.floor(this.time / 60);
         const seconds = this.time % 60;
         return `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
       },
     },
+    mounted() {
+      document.title = this.$t('soundMeter');
+    },
     methods: {
       async startRecording() {
         this.recording = true;
         this.stopped = false;
+        this.showElectronicButton = false;
         this.startTimer();
 
         this.audioContext = new (window.AudioContext)();
@@ -221,6 +234,11 @@ export default {
       async saveRecord() {
         try {
           const userId = await this.getUserId();
+          if (!userId) {
+            this.$router.push('/log-in');
+            return;
+          }
+
           const recordData = {
             'title': this.title,
             'description': this.description,
