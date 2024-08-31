@@ -86,6 +86,9 @@ export default {
     ...mapMutations(['setLanguage']),
     changeLocale(locale) {
       this.setLanguage(locale);
+    },
+    toggleBurgerMenu() {
+      this.isBurgerActive = !this.isBurgerActive;
     }
   },
   watch: {
@@ -104,16 +107,13 @@ export default {
 </script>
 
 <style scoped>
+
 .navbar {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 1000;
-}
-
-body {
-  padding-top: 56px;
 }
 
 .navbar-burger {

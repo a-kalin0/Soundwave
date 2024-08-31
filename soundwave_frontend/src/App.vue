@@ -2,6 +2,8 @@
   <div id="wrapper">
 
     <NavBar />
+
+    <br><br><br><br><br>
     
     <section class="section">
       <router-view/>

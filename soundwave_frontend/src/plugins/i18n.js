@@ -4,7 +4,7 @@ const messages = {
     'en': {
         soundwave: 'Soundwave : The Earth\'s Ear',
         welcomeTitle: 'Welcome to Soundwave !',
-        welcomeSubtitle: 'The Progressive Web App made to measure noise pollution and raise awareness of its negatives effects',
+        welcomeSubtitle: 'The Web App made to measure noise pollution and raise awareness of its negatives effects',
         language: 'Language',
         themeLight: 'Light Theme',
         themeDark: 'Dark Theme',
@@ -28,7 +28,7 @@ const messages = {
     'fr': {
         soundwave: 'Soundwave : L\'Oreille de la Terre',
         welcomeTitle: 'Bienvenue sur Soundwave !',
-        welcomeSubtitle: 'La Progressive Web App faite pour mesurer la pollution sonore et sensibiliser à ses effets négatifs',
+        welcomeSubtitle: 'La Web App faite pour mesurer la pollution sonore et sensibiliser à ses effets négatifs',
         language: 'Langue',
         themeLight: 'Thème lumineux',
         themeDark: 'Thème sombre',
@@ -52,7 +52,7 @@ const messages = {
     'de': {
         soundwave: 'Soundwave : Das Ohr Der Erde',
         welcomeTitle: 'Wilkommen bei Soundwave !',
-        welcomeSubtitle: 'Eine Progressive Web App gemacht, um die Lärmbelästigung zu messen und sie gegen ihre negativen Folgen zu sensibilisieren',
+        welcomeSubtitle: 'Eine Web App gemacht, um die Lärmbelästigung zu messen und sie gegen ihre negativen Folgen zu sensibilisieren',
         language: 'Sprache', 
         themeLight: 'Leuchtendes Thema',
         themeDark: 'Dunkles Thema',
@@ -76,7 +76,7 @@ const messages = {
     'nl': {
         soundwave: 'Soundwave : Het Oor Van De Aarde',
         welcomeTitle: 'Welkom bij Soundwave !',
-        welcomeSubtitle: 'Een Progressive Web App gemaakt om de geluidsoverlast te meten en te sensibiliseren tegen zijn negatieve gevolgen',
+        welcomeSubtitle: 'Een Web App gemaakt om de geluidsoverlast te meten en te sensibiliseren tegen zijn negatieve gevolgen',
         language: 'Taal',
         themeLight: 'Light Theme',
         themeDark: 'Dark Theme',
