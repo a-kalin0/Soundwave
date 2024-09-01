@@ -52,7 +52,11 @@ INSTALLED_APPS = [
     'accounts',
 ]
 
-CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS').split(',')
+CORS_ALLOWED_ORIGINS = [
+    'https://soundwave.ovh',
+    'https://www.soundwave.ovh',
+]
+
 
 MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
