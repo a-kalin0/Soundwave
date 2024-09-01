@@ -7,16 +7,16 @@
                 Welcome to the Soundmeter page !
             </p>
             <p class="subtitle" :class="themeClass">
-                Here you can measure the sound with the online soundmeter ! Enjoy !
+                Here you can measure the sound with the online soundmeter! Enjoy!
                 <br>
-                P.S. : Take attention to the fact that it can be less precise than the electronic soundmeter 
+                P.S.: Take attention to the fact that it can be less precise than the electronic soundmeter 
             </p>
         </div>
     </section>
 
     <div class="columns has-text-centered">
       <div class="column">
-        <p class="decibels" :class="themeClass">Current Decibel Level : {{ decibels.toFixed(2) }} dB</p>
+        <p class="decibels" :class="themeClass">Current Decibel Level: {{ decibels.toFixed(2) }} dB</p>
         <div class="controls">
           <button @click="startRecording" v-if="!recording && !stopped" :class="buttonClass">Start Recording</button>
           <button @click="stopRecording" v-if="recording" :class="buttonClass">Stop Recording</button>
@@ -27,19 +27,19 @@
       </div>
       <div class="column">
         <div class="timer" :class="themeClass">
-          <p>Recording time : {{ formattedTime }}</p>
+          <p>Recording time: {{ formattedTime }}</p>
         </div>
         <div class="stats" :class="themeClass">
           <div class="stat">
-            <span>MIN : </span>
+            <span>MIN: </span>
             <span>{{ min.toFixed(2) }} dB</span>
           </div>
           <div class="stat">
-            <span>MAX : </span>
+            <span>MAX: </span>
             <span>{{ max.toFixed(2) }} dB</span>
           </div>
           <div class="stat">
-            <span>AVG : </span>
+            <span>AVG: </span>
             <span>{{ average.toFixed(2) }} dB</span>
           </div>
         </div>
@@ -156,8 +156,10 @@ export default {
         this.showElectronicButton = false;
         this.startTimer();
 
+        // Create a new AudioContext
         this.audioContext = new (window.AudioContext)();
 
+        // JavaScript code for the AudioWorkletProcessor
         const processorCode = `
           class AudioProcessor extends AudioWorkletProcessor {
             constructor() {
@@ -187,29 +189,37 @@ export default {
           }
 
           registerProcessor('audio-processor', AudioProcessor);
-      `;
+        `;
 
-      const blob = new Blob([processorCode], { type: 'application/javascript' });
-      const url = URL.createObjectURL(blob);
+        // Create a Blob URL for the processor code
+        const blob = new Blob([processorCode], { type: 'application/javascript' });
+        const url = URL.createObjectURL(blob);
 
-      try {
-        await this.audioContext.audioWorklet.addModule(url);
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        this.mediaStreamSource = this.audioContext.createMediaStreamSource(stream);
-        this.workletNode = new AudioWorkletNode(this.audioContext, 'audio-processor');
+        try {
+          // Add the AudioWorkletProcessor module
+          await this.audioContext.audioWorklet.addModule(url);
 
-        this.workletNode.port.onmessage = (event) => {
-          const db = event.data;
-          this.decibels = db;
-          this.updateStats(db);
+          // Get the media stream from the microphone
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          this.mediaStreamSource = this.audioContext.createMediaStreamSource(stream);
+
+          // Create an AudioWorkletNode
+          this.workletNode = new AudioWorkletNode(this.audioContext, 'audio-processor');
+
+          // Handle the messages from the AudioWorkletProcessor
+          this.workletNode.port.onmessage = (event) => {
+            const db = event.data;
+            this.decibels = db;
+            this.updateStats(db);
+          }
+          
+          // Connect the media stream source to the AudioWorkletNode
+          this.mediaStreamSource.connect(this.workletNode);
+          this.workletNode.connect(this.audioContext.destination);
+        } catch (err) {
+          console.error('Error accessing microphone', err);
         }
-        
-        this.mediaStreamSource.connect(this.workletNode);
-        this.workletNode.connect(this.audioContext.destination);
-      } catch (err) {
-        console.error('Error accessing microphone', err);
-      }
-    },
+      },
       stopRecording() {
         this.recording = false;
         this.stopped = true;
