@@ -8,6 +8,7 @@ from .serializers import SoundSerializer
 import subprocess
 import sys
 import json
+import os
 
 
 class SoundList(generics.ListCreateAPIView):
@@ -22,15 +23,17 @@ class SoundViewSet(viewsets.ModelViewSet):
     queryset = Sound.objects.all()
     serializer_class = SoundSerializer 
 
+
 class ElectronicSoundMeter(views.APIView):
     def get(self, request, *args, **kwargs):
         try:
-            subprocess.Popen([sys.executable, 'soundmeter/sound_meter_app.py'])
+            script_path = os.path.join(os.path.dirname(__file__), 'soundmeter', 'sound_meter_app.py')
+            subprocess.Popen([sys.executable, script_path])
             return Response({'success': True})
         except Exception as e:
             print(f"Error: {e}")
             return Response({'success': False, 'error': str(e)}, status=500)
-        
+       
 
 class ImportMeasureAPIView(views.APIView):
     permission_classes = [IsAuthenticated]
